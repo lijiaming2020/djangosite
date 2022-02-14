@@ -1,0 +1,64 @@
+{% extends 'base.html' %} {% load static %}
+{% block title %}首页{% endblock %}
+{% block content %}
+<div class="container">
+    <nav aria-label="bradcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'blog:article_list' %}">最新</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'blog:article_list' %}?order=total_views">最热</a>
+            </li>
+        </ol>
+    </nav>
+    {% for article in articles %}
+    <div class="row mt-2">
+        <div class="col-sm-12">
+            <div class="card h-100 badge-light">
+                <div class="card-body">
+                    <h4 class="card-title">{{ article.title }}</h4>
+                    <a href="{% url 'blog:article_detail' article.id %}" class="card-link">阅读本文</a>
+                        <small class="col align-self-end" style="color:gray">
+                            <span class="bi bi-eye">
+                                {{ article.total_views }}
+                            </span>
+                        </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="pagination row">
+    <div class="m-auto">
+        <span class="step-links">
+            {% if articles.has_previous %}
+            <a href="?page=1&order={{ order }}" class="btn btn-success">
+                第1页
+            </a>
+<!--            <span>...</span>-->
+            <a href="?page={{ articles.previous_page_number }}" class="btn btn-secondary">
+                {{ articles.previous_page_number }}
+            </a>
+            {% endif %}
+
+            <span class="current btn btn-danger btn-lg">
+                {{articles.number}}
+            </span>
+
+            {% if articles.has_next %}
+            <a href="?page={{ articles.next_page_number }}&order={{ order }}" class="btn btn-success">
+                {{ articles.next_page_number }}
+            </a>
+            <a href="?page={{ articles.paginator.num_pages }}&order={{ order }}" class="btn btn-success">
+                最后1页
+            </a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+<div class="text-warning text-center">
+    共{{ articles.paginator.num_pages }}页
+</div>
+{% endblock %}

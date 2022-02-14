@@ -1,0 +1,58 @@
+{% extends 'base.html' %} {% load static %}
+{% block title %}{{ user.username }}的个人主页{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="media badge-light">
+        <div class="media-left media-middle">
+            <a href="#">
+                <img src="{{ show_user_info.img.url }}" class="media-object" height="120" width="80">
+            </a>
+        </div>
+        <div class="media-body">
+            <h4 class="media-heading">  {{ user.username }}的个人主页
+            </h4>
+            <p class="text-info">当前状态： {{ show_user_info.conditon }}</p>
+            <p class="text-info">年龄：{{ show_user_info.get_age }}岁</p>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-sm-12">
+            <div class="card h-100 badge-light">
+                <div class="card-body">
+                    <h4 class="card-title  bi bi-clock">生日</h4>
+                    <span>{{ show_user_info.birthday }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-sm-12">
+            <div class="card h-100 badge-light">
+                <div class="card-body">
+                    <h4 class="card-title bi bi-house">地址</h4>
+                    {% if show_user_info.address %}
+                    <address>{{ show_user_info.address }}</address>
+                    {% else %}
+                    <address>未填写</address>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="row mt-2">
+        <div class="col-sm-12">
+            <div class="card h-100 badge-light">
+                <div class="card-body">
+                    <h4 class="card-title bi bi-phone">手机号码</h4>
+                    {% if show_user_info.phone %}
+                    <address>{{ show_user_info.phone }}</address>
+                    {% else %}
+                    <address>未填写</address>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

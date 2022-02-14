@@ -1,0 +1,222 @@
+<!-- extends表明此页面继承自 base.html 文件 -->
+{% extends "base.html" %}
+{% load static %}
+
+<!-- 写入 base.html 中定义的 title -->
+{% block title %}
+文章详情
+{% endblock title %}
+
+<!-- 写入 base.html 中定义的 content -->
+{% block content %}
+<!-- 文章详情 -->
+<div class="container" style="background: #bee5eb">
+    <div class="row">
+        <!-- 标题及作者 -->
+        <h1 class="col-12 mt-4 mb-4">{{ article.title }}</h1>
+        <div class="col-12 alert alert-primary">
+            <a>作者：{{ article.author }}</a>
+            <a>{{ article.created|date:'Y-m-d H:i:s' }}</a>
+            <!-- 只有作者可以修改文章 -->
+            {% if user == article.author %}
+            · <a href="#" data-toggle="modal" data-target="#myModal">删除文章</a>
+            · <a href="{% url "blog:article_update" article.id %}">编辑文章</a>
+            {% endif %}
+            <small class="col align-self-end" style="color: gray;">
+                            <span class="bi bi-eye">
+                            {{ article.total_views }}
+                            </span>
+            </small>
+        </div>
+        <!-- 文章正文 -->
+        <div class="col-12">
+            <pre class="text-lg-left">{{ article.body }}</pre>
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+        <div class="col-12">
+    <!-- 发表评论 -->
+    <hr>
+    {% if user.is_authenticated %}
+    <div>
+        <div class="form-group form-inline">
+            {% csrf_token %}
+            <label for="body">
+                <strong class="text-warning">
+                    我也要发言：
+                </strong>
+            </label>
+            <textarea
+                        class="form-control"
+                        id="body"
+                        name="body"
+                        cols="60"
+                        rows="1"
+                        placeholder="说点什么吧"></textarea>
+            <button type="submit" id="post_comment" class="btn btn-primary">发送</button
+            </div>
+
+<!--        原提交评论后会刷新页面-->
+<!--        <form-->
+<!--                action="{% url 'blog:post_comment' article.id %}"-->
+<!--                method="POST"-->
+<!--        >-->
+<!--            {% csrf_token %}-->
+<!--            <div class="form-group form-inline">-->
+<!--                <label for="body">-->
+<!--                    <strong class="text-warning">-->
+<!--                        我也要发言：-->
+<!--                    </strong>-->
+<!--                </label>-->
+<!--                <textarea-->
+<!--                        type="text"-->
+<!--                        class="form-control"-->
+<!--                        id="body"-->
+<!--                        name="body"-->
+<!--                        cols="60"-->
+<!--                        rows="1"></textarea>-->
+<!--                <button type="submit" class="btn btn-primary">发送</button-->
+<!--            </div>-->
+<!--            &lt;!&ndash; 提交按钮 &ndash;&gt;>-->
+<!--        </form>-->
+    </div>
+    <br>
+    {% else %}
+    <br>
+    <h5 class="row justify-content-center">
+        请<a href="{% url 'blog:user_login' %}">登录</a>后回复
+    </h5>
+    <br>
+    {% endif %}
+
+        </div>
+
+<!--原文的评论区域-->
+<!--        <div class="comment_post">      {# 提交评论区域的div #}-->
+<!--            <div id="commentform_title">发表评论</div>-->
+<!--            <textarea rows="10" cols="60" id="comment_content"></textarea>-->
+<!--            <p><button>提交评论</button></p>-->
+<!--        </div>-->
+
+    </div>
+
+<div class="container">
+    <div class="col-12">
+<!-- 显示评论 -->
+<h5>共有{{ comments.count }}条评论</h5>
+<div id="comment_list">
+    {% for comment in comments %}
+    <hr>
+    <p style="color: white">
+<!--        <strong style="color: pink">-->
+        <span class="bi bi-person" style="color: yellow">
+            {{ comment.user }}
+        </span>
+        <!--        </strong> -->
+        于
+        <span style="color: yellow">
+                    {{ comment.created|date:"Y-m-d H:i:s" }}
+                </span> 时说：
+    </p>
+    <pre style="font-family: inherit; font-size: 1em; color:lightgray">
+{{ comment.body }}  <button type="button" pk="{{ comment.user_id }}" username="{{ comment.user }}" class="reply btn-link">回复</></pre>
+    {% endfor %}
+</div>
+</div>
+
+
+<!-- 模态框 -->
+<div class="modal fade " id="myModal">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+                <h4 class="modal-title">确认删除</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+                确认删除文章？
+            </div>
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        onclick="confirm_delete()">
+                确定
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // 删除文章的函数
+    function confirm_delete() {
+             location.href='{% url "blog:article_delete" article.id %}'
+    }
+</script>
+
+    <script>
+        // 用于生成控件脚本的函数
+        function makecomment(commentuser,commentdate,commentbody,commentid) {
+            return  '<p style="color: white">\
+                <!--        <strong style="color: pink">-->\
+                <span class="bi bi-person" style="color: yellow">'+
+                commentuser+
+        '</span>\
+            <!--        </strong> -->\
+            于\
+            <span style="color: yellow">'+
+                commentdate+
+        '</span> 时说：\
+            </p>\
+            <pre style="font-family: inherit; font-size: 1em; color:lightgray">'+
+                commentbody+
+                '<button type="button" pk="'+
+                commentid+
+                '"'+' username="'+commentuser+
+                '" class="reply btn-link">回复</></pre>'
+        }
+
+        var pid = "";       // {# 设置一个变量pid默认为空，用于后面作为数据库存储的父级评论的ID，如果没有父级评论则为空，子评论有父级评论 #}
+        // {# 提交评论按钮的点击事件 #}
+        $("#post_comment").click(function (){
+            // var body=$("#comment_content").val().replace(/^\s*|\s*$/g,"") // 去除两头空格
+            var body=$("#body").val().trim()
+            if(body===""){
+                return;} //如果为空则不执行任何操作
+            $.ajax({
+                url: '{% url 'blog:post_comment' article.id %}',
+                type: 'post',
+                data: {
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                    body: body,    // {# 提交的数据内容data #}
+                    pid: pid
+                },
+                success: function (res){         // {# 本例中返回的数据仅仅用于在控制台打印而已 #}
+                console.log(res);                // {# 控制台打印返回的数据 #}
+                    $("#body").val("");   // {# 提交完成后，清空评论输入框的内容 #}
+                    pid = "";                        // {# 子评论提交完成后，将pid默认设置为空，恢复为默认的父评论 #}
+                    $("#body").attr("placeholder","说点什么吧");
+                    // alert(JSON.stringify(res));
+                    $("#comment_list").prepend(makecomment("root",'202133',"hahaha","124556"))
+
+                }
+        })
+        })
+
+
+        // {# 回复按钮的点击事件 #}
+        $(".reply").click(function (){
+            $("#body").focus();       //{# 回复按钮的事件，点击时，将光标聚集到评论输入框中 #}
+            var val = "@" + $(this).attr("username") + "\n";   // {# $(this)指代".reply"标签本身，获取这个标签的username值 #}
+            // $("#body").val(val);      {# 回复时，自动在输入框加入：@要回复的人 #}
+            $("#body").attr("placeholder",val);
+            pid = $(this).attr("pk");           // {# 当点击回复时，父评论ID不再为空，此时修改为：对应评论的主键值ID #}
+        })
+
+    </script>
+
+{% endblock content %}

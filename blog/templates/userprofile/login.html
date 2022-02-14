@@ -1,0 +1,25 @@
+{% extends 'base.html' %} {% load static %}
+{% block title %}登录{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-6 badge-secondary">
+            <form method="post" action=".">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">账号</label>
+                    <input type="text" class="form-control" id="username" name="username" autofocus>
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+                <button type="submit" class="btn-primary">登录</button>
+                <br>
+                <h5>还没有账号？</h5>
+                <h5>点击<a href="{% url 'blog:user_register' %}">注册账号</a>加入我们吧</h5>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

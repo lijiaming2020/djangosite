@@ -1,0 +1,32 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">我的博客</a>
+        <div>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'blog:article_create' %}">创作</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'blog:article_list' %}">首页</a>
+                </li>
+                <!-- 判断用户是否登录 -->
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ user.username }}
+                    </a>
+                    <div class="dropdown-menu" aria-level="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'blog:user_detail' user.id %}">个人主页</a>
+                        <a class="dropdown-item" href="{% url 'blog:user_logout' %}">退出登录</a>
+                    </div>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'blog:user_login' %}">登录</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

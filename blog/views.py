@@ -98,7 +98,7 @@ def user_login(request):
                 login(request,user)
                 return redirect('blog:article_list')
             else:
-                return HttpResponse('用户名或密码输入有误，请重新数去')
+                return HttpResponse('用户名或密码输入有误，请重新输入')
         else:
             return HttpResponse('用户名或密码输入不合法')
     elif request.method=='GET':

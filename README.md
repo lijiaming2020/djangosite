@@ -1,4 +1,3 @@
 # djangosite
-# djangosite
-# djangosite
-# djangosite
+python3
+django4
